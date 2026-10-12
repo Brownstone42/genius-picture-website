@@ -1,0 +1,9 @@
+node_modules/
+.netlify/
+.openai/
+site/.openai/
+.env
+.env.*
+*.tar.gz
+*.zip
+site/qa/

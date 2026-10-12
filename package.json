@@ -1,0 +1,12 @@
+{
+  "name": "genius-picture-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node site/server.mjs",
+    "dev": "node site/server.mjs",
+    "build": "node site/build.mjs"
+  },
+  "engines": { "node": ">=18" }
+}
