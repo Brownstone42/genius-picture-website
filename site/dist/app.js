@@ -3,6 +3,7 @@ const header=document.querySelector('.header');
 const updateHeader=()=>header.classList.toggle('scrolled',window.scrollY>12);
 window.addEventListener('scroll',updateHeader,{passive:true});
 updateHeader();
+if(document.querySelector('#package-grid')) {
 const {packages,maintenance,addons}=window.SITE_DATA;
 const money=n=>'฿'+n.toLocaleString('th-TH');
 const escapeHtml=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -23,4 +24,19 @@ function updateOptions(){const i=Number(select.value);care.disabled=i===0;if(i==
 select.addEventListener('change',updateOptions);care.addEventListener('change',updateTotal);document.querySelector('#addon-options').addEventListener('change',updateTotal);updateOptions();
 document.querySelectorAll('[data-choose]').forEach(b=>b.addEventListener('click',()=>{select.value=b.dataset.choose;updateOptions();document.querySelector('#estimate').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}));
 document.querySelector('#copy-estimate').addEventListener('click',async()=>{const i=Number(select.value),chosen=[...addonSelection];const message=`สวัสดีครับ/ค่ะ สนใจทำเว็บไซต์กับ Genius Picture\nแพ็กเกจ: ${packages[i].name} ${money(packages[i].price)}\nบริการดูแลรายปี: ${i>0&&care.checked?money(maintenance[i-1].price)+'/ปี':'ไม่เลือก'}\nบริการเสริม: ${chosen.length?chosen.map(a=>addons[a].name+' '+money(addons[a].price)).join(', '):'ไม่เลือก'}\nงบรวมปีแรกเบื้องต้น: ${document.querySelector('#total').textContent}\nต้องการปรึกษาขอบเขตงานและใบเสนอราคาเพิ่มเติม`;const status=document.querySelector('#copy-status');try{await navigator.clipboard.writeText(message);status.innerHTML='คัดลอกแล้ว · <a href="https://line.me/R/ti/p/@Genisolu" target="_blank" rel="noopener">เปิด LINE แล้ววางข้อความเพื่อคุยกับเรา ↗</a>';}catch{status.textContent='เลือกและคัดลอกข้อความด้านล่าง แล้วส่งทาง LINE @Genisolu';let area=document.querySelector('#manual-copy');if(!area){area=document.createElement('textarea');area.id='manual-copy';area.setAttribute('aria-label','ข้อความแพ็กเกจสำหรับคัดลอก');area.style.cssText='width:100%;height:170px;padding:12px;margin-top:12px;border:1px solid #bfd9cc;border-radius:7px;font:inherit;font-size:12px';status.after(area);}area.value=message;area.focus();area.select();}});
+}
 const menu=document.querySelector('.menu'),nav=document.querySelector('nav');menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'ปิดเมนู':'เปิดเมนู');});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','เปิดเมนู');}));
+
+const servicesTrack=document.querySelector('.services-track');
+if(servicesTrack){
+ const centerServices=()=>{
+  if(window.innerWidth<=760)return;
+  const middle=servicesTrack.querySelectorAll('.service-card')[2];
+  if(!middle)return;
+  const trackRect=servicesTrack.getBoundingClientRect();
+  const cardRect=middle.getBoundingClientRect();
+  servicesTrack.scrollLeft+=cardRect.left-trackRect.left+(cardRect.width-servicesTrack.clientWidth)/2;
+ };
+ requestAnimationFrame(centerServices);
+ window.addEventListener('resize',centerServices,{passive:true});
+}
